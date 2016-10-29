@@ -14,13 +14,13 @@ namespace micro_flyweight
 
 
     template<typename T>
-    class flyweight
+    class flyweight final
     {
         friend factory<T>;
 
       public:
         flyweight() = delete;
-        flyweight(const flyweight<T>& fw) = delete;
+        flyweight(const flyweight<T>& fw);
 
         flyweight(flyweight<T>&& fw)
             : m_factory{ fw.m_factory }, m_id{ fw.m_id }
@@ -170,6 +170,10 @@ namespace micro_flyweight
             return false;
         }
 
+        void increment(id_t id) {
+            m_index[id]->refs++;
+        }
+
         T& operator[] (id_t id) {
             return m_index[id]->item;
         }
@@ -195,6 +199,16 @@ namespace micro_flyweight
         : m_factory{ f }
         , m_id{ id }
     {
+    }
+
+    template<typename T>
+    flyweight<T>::flyweight(const flyweight<T>& fw)
+        : m_factory{ fw.m_factory }
+        , m_id{ fw.m_id }
+    {
+        if (m_factory) {
+            m_factory->increment(m_id);
+        }
     }
 
     template<typename T>

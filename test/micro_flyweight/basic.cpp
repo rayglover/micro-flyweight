@@ -55,6 +55,19 @@ TEST(micro_flyweight, counting)
     EXPECT_EQ(fact.count_all(), 1u);
 }
 
+TEST(micro_flyweight, copy)
+{
+    using namespace micro_flyweight;
+
+    factory<std::string> fact;
+
+    flyweight<std::string> a = fact("a");
+    flyweight<std::string> b = a;
+
+    EXPECT_EQ(fact.count_unique(), 1u);
+    EXPECT_EQ(fact.count_all(), 2u);
+}
+
 TEST(micro_flyweight, equality)
 {
     using namespace micro_flyweight;
