@@ -25,7 +25,7 @@ TEST(micro_flyweight, contains)
 
     factory<std::string> fact;
     flyweight<std::string> fw = fact("abc");
-    
+
     EXPECT_TRUE(fact.contains(fw.get()));
     EXPECT_TRUE(fact.contains("abc"));
 }
@@ -35,7 +35,7 @@ TEST(micro_flyweight, counting)
     using namespace micro_flyweight;
 
     factory<int> fact;
-    
+
     EXPECT_EQ(fact.count_unique(), 0u);
     EXPECT_EQ(fact.count_all(), 0u);
 
@@ -73,7 +73,7 @@ TEST(micro_flyweight, equality)
     using namespace micro_flyweight;
 
     factory<int> fact;
-    
+
     flyweight<int> x = fact(123);
     flyweight<int> x2 = fact(123);
     flyweight<int> x3 = fact(999);
@@ -96,7 +96,7 @@ TEST(micro_flyweight, const_equality)
     using namespace micro_flyweight;
 
     factory<int> fact;
-    
+
     const flyweight<int> x = fact(123);
     const flyweight<int> x2 = fact(123);
     const flyweight<int> x3 = fact(999);
@@ -109,12 +109,12 @@ TEST(micro_flyweight, const_equality)
 struct foo {
     static int N;
     int x;
-    
+
     foo(int x)        : x{x}   { N++; }
     foo(const foo& f) : x{f.x} { N++; }
     foo(foo&& f)      : x{f.x} { N++; f.x = 0; }
     foo() = delete;
-    
+
     bool operator== (const foo& rhs) const { return x == rhs.x; }
 };
 int foo::N = 0;
@@ -136,7 +136,7 @@ TEST(micro_flyweight, move_semantics)
     foo::N = 0;
     {
         /* construct and move = 2 */
-        const flyweight<foo> x = fact(foo(123));    
+        const flyweight<foo> x = fact(foo(123));
         EXPECT_EQ(foo::N, 2);
     }
 
@@ -144,8 +144,8 @@ TEST(micro_flyweight, move_semantics)
     {
         /* construct and copy = 2 */
         foo f(124);
-        const flyweight<foo> x = fact(f);    
-        
+        const flyweight<foo> x = fact(f);
+
         EXPECT_EQ(foo::N, 2);
         EXPECT_EQ(f.x, 124);
     }
