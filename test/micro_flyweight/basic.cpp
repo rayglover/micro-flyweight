@@ -1,7 +1,7 @@
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 
-#include "micro_flyweight/flyweight.h"
+#include "micro_flyweight.h"
 
 #include <string>
 #include <vector>
