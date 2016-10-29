@@ -2,8 +2,15 @@
 
 namespace micro_flyweight
 {
+    /* forward declarations ------------------------------------------------ */
+
+
     template<typename T>
     class factory;
+
+
+    /* flyweight ----------------------------------------------------------- */
+
 
     template<typename T>
     class flyweight final
@@ -34,7 +41,7 @@ namespace micro_flyweight
     };
 
 
-    /* implementations --------------------------------- */
+    /* implementations ----------------------------------------------------- */
 
 
     template<typename T>
