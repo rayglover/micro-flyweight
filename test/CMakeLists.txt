@@ -32,6 +32,7 @@ endif ()
 # main test suite
 add_executable (micro_flyweight_test
 	"micro_flyweight/basic.cpp"
+	"micro_flyweight/string_view.cpp"
 )
 target_link_libraries (micro_flyweight_test
 	micro_flyweight
