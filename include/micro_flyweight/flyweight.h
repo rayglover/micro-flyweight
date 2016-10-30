@@ -89,7 +89,7 @@ namespace micro_flyweight
     flyweight<T, Tr>::~flyweight()
     {
         if (m_factory) {
-            m_factory->release(m_id);
+            m_factory->decrement(m_id);
         }
     }
 

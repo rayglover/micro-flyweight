@@ -125,15 +125,15 @@ namespace micro_flyweight
             m_index[id]->refs++;
         }
 
-        const interned* operator[] (id_t id) {
-            return m_index[id];
-        }
-
-        void release(id_t id) {
+        void decrement(id_t id) {
             interned *const t = m_index[id];
             if ((t->refs -= 1) == 0) {
                 assert(remove(id));
             }
+        }
+
+        const interned* operator[] (id_t id) {
+            return m_index[id];
         }
 
         size_t  m_counter;
