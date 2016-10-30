@@ -95,7 +95,7 @@ namespace micro_flyweight
             std::pair<it_t, it_t> range = m_store.equal_range(h);
 
             for (auto it = range.first; it != range.second; it++) {
-                if (t == it->second.item) {
+                if (std::equal_to<T>()(t, it->second.item)) {
                     *id = it->second.id;
                     return true;
                 }
