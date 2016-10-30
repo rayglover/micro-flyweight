@@ -8,27 +8,28 @@
 
 namespace micro_flyweight
 {
-    template<typename T>
+    template<typename T, typename Tr = traits<T>>
     class factory
     {
-        friend flyweight<T>;
+        friend flyweight<T, Tr>;
 
         using hash_t = size_t;
         using id_t = size_t;
+        using item_t = typename Tr::interned_t;
 
         struct interned final
         {
             const id_t id;
             size_t refs;
-            T item;
+            item_t item;
 
             /* by move */
-            interned(id_t id, size_t refs, T&& item)
-                : id{ id }, refs{ refs }, item{ std::forward<T>(item) }
+            interned(id_t id, size_t refs, item_t&& item)
+                : id{ id }, refs{ refs }, item{ std::forward<item_t>(item) }
             {}
 
             /* by copy */
-            interned(id_t id, size_t refs, const T& item)
+            interned(id_t id, size_t refs, const item_t& item)
                 : id{ id }, refs{ refs }, item(item)
             {}
         };
@@ -42,16 +43,15 @@ namespace micro_flyweight
         ~factory() { assert(count_unique() == 0); }
 
         template<typename K>
-        flyweight<T> operator() (K&& thing)
+        flyweight<T, Tr> operator() (K&& thing)
         {
             id_t id = 0;
             if (contains(thing, &id)) {
                 m_index[id]->refs += 1;
-                return flyweight<T>(this, id);
             }
             else {
                 /* hash the thing */
-                hash_t h = std::hash<T>()(thing);
+                hash_t h = typename Tr::hash_t()(thing);
 
                 /* add to storage */
                 interned& elem = (*m_store.emplace(
@@ -63,10 +63,9 @@ namespace micro_flyweight
 
                 /* index by id */
                 m_index.emplace(elem.id, &elem);
-
-                /* create flyweight */
-                return flyweight<T>(this, elem.id);
+                id = elem.id;
             }
+            return flyweight<T, Tr>(this, id);
         }
 
         size_t count_unique() {
@@ -92,7 +91,7 @@ namespace micro_flyweight
         {
             using it_t = typename store_t::iterator;
 
-            hash_t h = std::hash<T>()(t);
+            hash_t h = typename Tr::hash_t()(t);
             std::pair<it_t, it_t> range = m_store.equal_range(h);
 
             for (auto it = range.first; it != range.second; it++) {
@@ -109,7 +108,7 @@ namespace micro_flyweight
             using it_t = typename store_t::iterator;
             interned *const t = m_index[id];
 
-            hash_t h = std::hash<T>()(t->item);
+            hash_t h = typename Tr::hash_t()(t->item);
             std::pair<it_t, it_t> range = m_store.equal_range(h);
 
             for (auto it = range.first; it != range.second; it++) {
