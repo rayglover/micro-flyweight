@@ -33,7 +33,7 @@ namespace micro_flyweight
             {}
         };
 
-        using store_t = std::unordered_multimap<hash_t, std::unique_ptr<interned>>;
+        using store_t = std::unordered_multimap<hash_t, interned>;
         using index_t = std::unordered_map<id_t, interned *const>;
 
       public:
@@ -50,9 +50,22 @@ namespace micro_flyweight
                 return flyweight<T>(this, id);
             }
             else {
+                /* hash the thing */
                 hash_t h = std::hash<T>()(thing);
-                return index(h, std::make_unique<interned>(
-                    m_counter++, 1u, std::forward<K>(thing)));
+
+                /* add to storage */
+                interned& elem = (*m_store.emplace(
+                        std::piecewise_construct,
+                        std::forward_as_tuple(h),
+                        std::forward_as_tuple(
+                            m_counter++, 1u, std::forward<K>(thing)))
+                    ).second;
+
+                /* index by id */
+                m_index.emplace(elem.id, &elem);
+
+                /* create flyweight */
+                return flyweight<T>(this, elem.id);
             }
         }
 
@@ -83,21 +96,12 @@ namespace micro_flyweight
             std::pair<it_t, it_t> range = m_store.equal_range(h);
 
             for (auto it = range.first; it != range.second; it++) {
-                if (t == it->second->item) {
-                    *id = it->second->id;
+                if (t == it->second.item) {
+                    *id = it->second.id;
                     return true;
                 }
             }
             return false;
-        }
-
-        flyweight<T> index(hash_t h, std::unique_ptr<interned>&& ptr)
-        {
-            auto id = ptr->id;
-            m_index.emplace(id, ptr.get());
-            m_store.emplace(h, std::move(ptr));
-
-            return flyweight<T>(this, id);
         }
 
         bool remove(id_t id)
@@ -109,7 +113,7 @@ namespace micro_flyweight
             std::pair<it_t, it_t> range = m_store.equal_range(h);
 
             for (auto it = range.first; it != range.second; it++) {
-                if (id == it->second->id) {
+                if (id == it->second.id) {
                     m_index.erase(id);
                     m_store.erase(it);
                     return true;

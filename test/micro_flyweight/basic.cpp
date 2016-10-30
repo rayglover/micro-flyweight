@@ -110,9 +110,9 @@ struct foo {
     static int N;
     int x;
 
-    foo(int x)        : x{x}   { N++; }
-    foo(const foo& f) : x{f.x} { N++; }
+    foo(int x)        : x{x}   { }
     foo(foo&& f)      : x{f.x} { N++; f.x = 0; }
+    foo(const foo& f) = delete;
     foo() = delete;
 
     bool operator== (const foo& rhs) const { return x == rhs.x; }
@@ -129,24 +129,18 @@ namespace std {
 
 TEST(micro_flyweight, move_semantics)
 {
+    /* tests we can index a non-copyable type */
     using namespace micro_flyweight;
 
     factory<foo> fact;
-
     foo::N = 0;
     {
-        /* construct and move = 2 */
         const flyweight<foo> x = fact(foo(123));
-        EXPECT_EQ(foo::N, 2);
+
+        /* required 1 moves */
+        EXPECT_EQ(foo::N, 1);
+        EXPECT_TRUE(fact.contains(foo(123)));
     }
 
-    foo::N = 0;
-    {
-        /* construct and copy = 2 */
-        foo f(124);
-        const flyweight<foo> x = fact(f);
-
-        EXPECT_EQ(foo::N, 2);
-        EXPECT_EQ(f.x, 124);
-    }
+    EXPECT_FALSE(fact.contains(foo(123)));
 }
