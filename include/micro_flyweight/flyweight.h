@@ -9,8 +9,14 @@ namespace micro_flyweight
     template <typename T>
     struct traits
     {
+        /* hash function for storage and retrieval */
         using hash_t = std::hash<T>;
+
+        /* the stored (interned) type */
         using interned_t = T;
+
+        /* the flyweight type */
+        using value_t = const T&;
     };
 
     /* forward declarations ------------------------------------------------ */
@@ -20,23 +26,24 @@ namespace micro_flyweight
 
     /* flyweight ----------------------------------------------------------- */
 
-    template<typename T, typename Traits = traits<T>>
+    template<typename T, typename Tr = traits<T>>
     class flyweight final
     {
-        using self_t = flyweight<T, Traits>;
-        using factory_t = factory<T, Traits>;
-
-        friend factory_t;
-
       public:
+        using self_t = flyweight<T, Tr>;
+        using factory_t = factory<T, Tr>;
+
         flyweight() = delete;
         flyweight(const self_t& fw);
         flyweight(self_t&& fw);
 
         ~flyweight();
 
-        const T& get();
-	    const T& get() const;
+        const typename Tr::value_t get();
+	    const typename Tr::value_t get() const;
+
+        operator typename Tr::value_t() { return get(); }
+        operator typename Tr::value_t() const { return get(); }
 
         bool operator== (const self_t& rhs);
         bool operator== (const self_t& rhs) const;
@@ -45,6 +52,7 @@ namespace micro_flyweight
         bool operator!= (const self_t& rhs) const;
 
       private:
+        friend factory_t;
         flyweight(factory_t* f, typename factory_t::id_t id);
 
         factory_t* m_factory;
@@ -86,13 +94,13 @@ namespace micro_flyweight
     }
 
     template<typename T, typename Tr>
-    const T& flyweight<T, Tr>::get() const {
-        return (*m_factory)[m_id];
+    const typename Tr::value_t flyweight<T, Tr>::get() const {
+        return (*m_factory)[m_id]->item;
     }
 
     template<typename T, typename Tr>
-    const T& flyweight<T, Tr>::get() {
-        return (*m_factory)[m_id];
+    const typename Tr::value_t flyweight<T, Tr>::get() {
+        return (*m_factory)[m_id]->item;
     }
 
     template<typename T, typename Tr>

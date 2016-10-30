@@ -14,7 +14,7 @@ namespace micro_flyweight
         friend flyweight<T, Tr>;
 
         using hash_t = size_t;
-        using id_t = size_t;
+        using id_t   = size_t;
         using item_t = typename Tr::interned_t;
 
         struct interned final
@@ -125,8 +125,8 @@ namespace micro_flyweight
             m_index[id]->refs++;
         }
 
-        T& operator[] (id_t id) {
-            return m_index[id]->item;
+        const interned* operator[] (id_t id) {
+            return m_index[id];
         }
 
         void release(id_t id) {
