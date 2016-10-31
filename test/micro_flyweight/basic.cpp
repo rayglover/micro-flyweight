@@ -1,6 +1,4 @@
 #include "gtest/gtest.h"
-#include "gmock/gmock.h"
-
 #include "micro_flyweight.h"
 
 #include <string>
@@ -143,4 +141,28 @@ TEST(micro_flyweight, move_semantics)
     }
 
     EXPECT_FALSE(fact.contains(foo(123)));
+}
+
+TEST(static_factory, by_copy)
+{
+    using namespace micro_flyweight;
+
+    std::string a("The quick brown fox");
+    const flyweight<std::string> x(a);
+
+    EXPECT_EQ(x.get(), a);
+    EXPECT_NE(x.get(), "abc");
+}
+
+TEST(static_factory, by_move)
+{
+    using namespace micro_flyweight;
+
+    foo::N = 0;
+    const flyweight<foo> x(foo(1337));
+    const flyweight<foo> y = x;
+
+    EXPECT_EQ(foo::N, 1);
+    EXPECT_EQ(y.get(), foo(1337));
+    EXPECT_EQ(x, y);
 }

@@ -140,4 +140,17 @@ namespace micro_flyweight
         store_t m_store;
         index_t m_index;
     };
+
+    /* static_factory ------------------------------------------------------ */
+
+    template<typename T, typename Tr = traits<T>>
+    class static_factory
+    {
+      public:
+        static factory<T, Tr>* get()
+        {
+            static factory<T, Tr> fact;
+            return &fact;
+        }
+    };
 }

@@ -22,6 +22,9 @@ namespace micro_flyweight
     /* forward declarations ------------------------------------------------ */
 
     template<typename, typename>
+    class static_factory;
+
+    template<typename, typename>
     class factory;
 
     /* flyweight ----------------------------------------------------------- */
@@ -32,6 +35,9 @@ namespace micro_flyweight
       public:
         using self_t = flyweight<T, Tr>;
         using factory_t = factory<T, Tr>;
+
+        flyweight(const T&);
+        flyweight(T&&);
 
         flyweight() = delete;
         flyweight(const self_t& fw);
@@ -62,6 +68,26 @@ namespace micro_flyweight
     /* implementations ----------------------------------------------------- */
 
     template<typename T, typename Tr>
+    flyweight<T, Tr>::flyweight(const T& thing)
+        : m_factory{ static_factory<T, Tr>::get() }
+        , m_id{ 0 }
+    {
+        flyweight<T, Tr>&& fw = (*m_factory)(thing);
+        fw.m_factory = nullptr;
+        m_id = fw.m_id;
+    }
+
+    template<typename T, typename Tr>
+    flyweight<T, Tr>::flyweight(T&& thing)
+        : m_factory{ static_factory<T, Tr>::get() }
+        , m_id{ 0 }
+    {
+        flyweight<T, Tr>&& fw = (*m_factory)(std::forward<T>(thing));
+        fw.m_factory = nullptr;
+        m_id = fw.m_id;
+    }
+
+    template<typename T, typename Tr>
     flyweight<T, Tr>::flyweight(factory<T, Tr>* f, typename factory<T, Tr>::id_t id)
         : m_factory{ f }
         , m_id{ id }
@@ -70,7 +96,8 @@ namespace micro_flyweight
 
     template<typename T, typename Tr>
     flyweight<T, Tr>::flyweight(flyweight<T, Tr>&& fw)
-        : m_factory{ fw.m_factory }, m_id{ fw.m_id }
+        : m_factory{ fw.m_factory }
+        , m_id{ fw.m_id }
     {
         fw.m_factory = nullptr;
     }
