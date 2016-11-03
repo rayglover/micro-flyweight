@@ -2,6 +2,7 @@
 
 #include "micro_flyweight/flyweight.h"
 
+#include <numeric>
 #include <unordered_map>
 #include <assert.h>
 #include <memory>

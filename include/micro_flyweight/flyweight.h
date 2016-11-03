@@ -137,7 +137,7 @@ namespace micro_flyweight
 
     template<typename T, typename Tr>
     bool flyweight<T, Tr>::operator== (const flyweight<T, Tr>& rhs) const {
-        return (m_id == rhs.m_id && m_factory == rhs.m_factory) || rhs.get() == get();
+        return ::std::equal_to<T>()(get(), rhs.get());
     }
 
     template<typename T, typename Tr>
@@ -147,6 +147,6 @@ namespace micro_flyweight
 
     template<typename T, typename Tr>
     bool flyweight<T, Tr>::operator!= (const flyweight<T, Tr>& rhs) const {
-        return (m_id != rhs.m_id || m_factory != rhs.m_factory) || rhs.get() != get();
+        return !::std::equal_to<T>()(get(), rhs.get());
     }
 }
