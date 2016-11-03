@@ -26,13 +26,14 @@ add_subdirectory (${googletest_SOURCE_DIR} ${googletest_BINARY_DIR})
 
 # Turn on all warnings when using gcc.
 if (CMAKE_COMPILER_IS_GNUCXX)
-   add_definitions ("--std=c++14 -g -W -Wall -pedantic")
+   add_definitions ("--std=c++14 -W -Wall -pedantic")
 endif ()
 
 # main test suite
 add_executable (micro_flyweight_test
 	"micro_flyweight/basic.cpp"
 	"micro_flyweight/string_view.cpp"
+	"micro_flyweight/examples.cpp"
 )
 target_link_libraries (micro_flyweight_test
 	micro_flyweight

@@ -104,18 +104,21 @@ TEST(micro_flyweight, const_equality)
     EXPECT_TRUE(x != x3);
 }
 
-struct foo {
-    static int N;
-    int x;
+namespace {
+    struct foo
+    {
+        static int N;
+        int x;
 
-    foo(int x)        : x{x}   { }
-    foo(foo&& f)      : x{f.x} { N++; f.x = 0; }
-    foo(const foo& f) = delete;
-    foo() = delete;
+        foo(int x)        : x{x}   { }
+        foo(foo&& f)      : x{f.x} { N++; f.x = 0; }
+        foo(const foo& f) = delete;
+        foo() = delete;
 
-    bool operator== (const foo& rhs) const { return x == rhs.x; }
-};
-int foo::N = 0;
+        bool operator== (const foo& rhs) const { return x == rhs.x; }
+    };
+    int foo::N = 0;
+}
 
 namespace std {
     template <> struct hash<foo> {
