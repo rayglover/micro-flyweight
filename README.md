@@ -1,4 +1,4 @@
-# micro-flyweight: drop-in Boost.Flyweight replacement
+# micro-flyweight
 [![Build Status](https://travis-ci.org/rayglover/micro_flyweight.svg?branch=master)](https://travis-ci.org/rayglover/micro_flyweight)
 
 _Flyweights are small-sized handle classes granting constant access to shared common data, thus allowing for the management of large amounts of entities within reasonable memory limits._ 
@@ -68,11 +68,11 @@ int main()
     std::cout << persona::countries.count_unique() << '\n';
 }
 ```
-- _Output_
-  ```
-  3
-  1
-  ```
+_Output_
+```
+3
+1
+```
 
 #### Reference counting
 
@@ -131,16 +131,16 @@ int main()
     }
 }
 ```
-- _Output_
-    ```
-    foo(int)
-    foo(foo&&)
-    ~foo()
-    foo(int)
-    ~foo()
-    true
-    ~foo()
-    ```
+_Output_
+```
+foo(int)
+foo(foo&&)
+~foo()
+foo(int)
+~foo()
+true
+~foo()
+```
 
 ## Requirements
 
