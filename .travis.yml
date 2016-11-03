@@ -16,7 +16,6 @@ matrix:
             - g++-5
 
 before_script:
-  - which $COMPILER
   - mkdir build_tests && cd build_tests
   - cmake .. -Dmicro_flyweight_WITH_TESTS:BOOL=on -DCMAKE_CXX_COMPILER=$COMPILER -DCMAKE_BUILD_TYPE=$BUILD_TYPE
   - cmake --build .
