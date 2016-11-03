@@ -7,7 +7,9 @@ Like Boost.Flyweight, micro-flyweight makes it easy to use this common programmi
 
 ## Examples
 
-#### std::string flyweights
+These simple examples of `micro_flyweight` loosely follow [these](https://theboostcpplibraries.com/boost.flyweight) from the online book _The Boost c++ Libraries_.
+
+#### A hundred thousand identical strings
 
 ```c++
 using namespace micro_flyweight;
@@ -29,7 +31,9 @@ int main()
 }
 ```
 
-#### Seperate storage
+#### Separate storage
+
+Boost.Flyweight uses tags to enforce separate storage containers for logically different kinds of flyweight (e.g. cities and countries). With Micro-flyweight you can use the `factory` type to create flyweights. 
 
 ```c++
 using std::string;
@@ -79,7 +83,7 @@ _Output_
 ```c++
 using namespace micro_flyweight;
 
-/*  simulate a large datastucture... */
+/*  simulate a large data structure... */
 struct foo {
     int data;
 
@@ -117,7 +121,7 @@ int main()
     /* 1. stores an instance of foo */
     foo_fw a(foo(123));
     {
-        /* 2. copy the flyweight, refering
+        /* 2. copy the flyweight, referring
               to the same foo instance */
         foo_fw b = a;
 
@@ -165,7 +169,7 @@ $ ctest . -VV -C Debug
 
 ## Use in your own projects
 
-If you're using cmake, it should be straight-forward to use tstrings in your own project. To make the package `micro_flyweight` available to other projects on your system:
+If you're using cmake, it should be straight-forward to use micro-flyweight in your own project. To make the package `micro_flyweight` available to other projects on your system:
 
 ```cmake
 $ cmake --install .
@@ -183,4 +187,4 @@ add_executable (demo main.cpp)
 target_link_libraries (demo micro_flyweight)
 ```
 
-Alternatively, you can add `./include` as an include directory to your project. 
+Alternatively, you can add `./include` as an include directory to your project since micro-flyweight is header-only.

@@ -69,7 +69,7 @@ TEST(micro_flyweight_examples, b)
 /* example c --------------------------------------------------------------- */
 
 namespace {
-    /* simulate a large datastucture... */
+    /* simulate a large data structure... */
     struct foo {
         int data;
 
