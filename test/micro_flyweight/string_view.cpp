@@ -18,15 +18,31 @@ namespace
         EXPECT_EQ(3u, sv.size());
         EXPECT_EQ("abc", sv);
     }
+
+    using fw_str = micro_flyweight::flyweight<string_view, string_traits>;
 }
 
 TEST(micro_flyweight, string_view)
 {
-    using str = micro_flyweight::flyweight<string_view, string_traits>;
-
-    typename str::factory_t fact;
-    str elem = fact("abc");
+    typename fw_str::factory_t fact;
+    fw_str elem = fact("abc");
 
     /* note implicit cast */
     check_view(elem);
+}
+
+TEST(micro_flyweight, assignement)
+{
+    std::string text = "The quick brown fox";
+    fw_str elem;
+    {
+        /* first assignment */
+        elem = fw_str(string_view{ text.data() + 4, 5 });
+    }
+    EXPECT_EQ(elem.get(), "quick");
+    {
+        /* reassignment (note cast) */
+        elem = string_view{ text.data() + 10, 5 };
+    }
+    EXPECT_EQ(elem.get(), "brown");
 }

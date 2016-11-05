@@ -29,9 +29,10 @@ namespace micro_flyweight
                 : id{ id }, refs{ refs }, item{ std::forward<item_t>(item) }
             {}
 
-            /* by copy */
-            interned(id_t id, size_t refs, const item_t& item)
-                : id{ id }, refs{ refs }, item(item)
+            /* by copy, permit explicit casting */
+            template <typename K>
+            interned(id_t id, size_t refs, const K& item)
+                : id{ id }, refs{ refs }, item{ item }
             {}
         };
 
@@ -54,10 +55,12 @@ namespace micro_flyweight
                 /* hash the thing */
                 hash_t h = typename Tr::hash_t()(thing);
 
-                /* add to storage */
+                /* add to storage via perfect forwarding */
                 interned& elem = (*m_store.emplace(
                         std::piecewise_construct,
+                        /* the hash */
                         std::forward_as_tuple(h),
+                        /* create the intern */
                         std::forward_as_tuple(
                             m_counter++, 1u, std::forward<K>(thing)))
                     ).second;

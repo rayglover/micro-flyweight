@@ -39,11 +39,13 @@ namespace micro_flyweight
         flyweight(const T&);
         flyweight(T&&);
 
-        flyweight() = delete;
+        flyweight();
         flyweight(const self_t& fw);
         flyweight(self_t&& fw);
 
         ~flyweight();
+
+        flyweight<T, Tr>& operator= (self_t&& other);
 
         const typename Tr::value_t get();
 	    const typename Tr::value_t get() const;
@@ -66,6 +68,12 @@ namespace micro_flyweight
     };
 
     /* implementations ----------------------------------------------------- */
+
+    template<typename T, typename Tr>
+    flyweight<T, Tr>::flyweight()
+        : m_factory{ nullptr }
+        , m_id{ 0 }
+    {}
 
     template<typename T, typename Tr>
     flyweight<T, Tr>::flyweight(const T& thing)
@@ -91,8 +99,7 @@ namespace micro_flyweight
     flyweight<T, Tr>::flyweight(factory<T, Tr>* f, typename factory<T, Tr>::id_t id)
         : m_factory{ f }
         , m_id{ id }
-    {
-    }
+    {}
 
     template<typename T, typename Tr>
     flyweight<T, Tr>::flyweight(flyweight<T, Tr>&& fw)
@@ -130,6 +137,8 @@ namespace micro_flyweight
         return (*m_factory)[m_id]->item;
     }
 
+    /* equality ------------------------------------------------------------ */
+
     template<typename T, typename Tr>
     bool flyweight<T, Tr>::operator== (const flyweight<T, Tr>& rhs) {
         return static_cast<const flyweight<T, Tr>&>(*this) == rhs;
@@ -148,5 +157,19 @@ namespace micro_flyweight
     template<typename T, typename Tr>
     bool flyweight<T, Tr>::operator!= (const flyweight<T, Tr>& rhs) const {
         return !::std::equal_to<T>()(get(), rhs.get());
+    }
+
+    /* assignment ---------------------------------------------------------- */
+
+    template<typename T, typename Tr>
+    flyweight<T, Tr>& flyweight<T, Tr>::operator= (flyweight<T, Tr>&& other) {
+        if (m_factory) {
+            m_factory->decrement(m_id);
+        }
+        m_factory = other.m_factory;
+        m_id = other.m_id;
+
+        other.m_factory = nullptr;
+        return *this;
     }
 }
