@@ -104,6 +104,17 @@ TEST(micro_flyweight, const_equality)
     EXPECT_TRUE(x != x3);
 }
 
+TEST(micro_flyweight, valid)
+{
+    using namespace micro_flyweight;
+
+    flyweight<std::string> fw;
+    EXPECT_FALSE(fw.valid());
+
+    fw = std::string("The quick brown fox");
+    EXPECT_TRUE(fw.valid());
+}
+
 namespace {
     struct foo
     {

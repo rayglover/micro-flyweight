@@ -59,6 +59,9 @@ namespace micro_flyweight
         bool operator!= (const self_t& rhs);
         bool operator!= (const self_t& rhs) const;
 
+        bool valid();
+        bool valid() const;
+
       private:
         friend factory_t;
         flyweight(factory_t* f, typename factory_t::id_t id);
@@ -129,12 +132,24 @@ namespace micro_flyweight
 
     template<typename T, typename Tr>
     const typename Tr::value_t flyweight<T, Tr>::get() const {
+        assert(valid());
         return (*m_factory)[m_id]->item;
     }
 
     template<typename T, typename Tr>
     const typename Tr::value_t flyweight<T, Tr>::get() {
+        assert(valid());
         return (*m_factory)[m_id]->item;
+    }
+
+    template<typename T, typename Tr>
+    bool flyweight<T, Tr>::valid() const {
+        return m_factory != nullptr;
+    }
+
+    template<typename T, typename Tr>
+    bool flyweight<T, Tr>::valid() {
+        return m_factory != nullptr;
     }
 
     /* equality ------------------------------------------------------------ */
