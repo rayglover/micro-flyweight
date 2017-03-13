@@ -1,5 +1,5 @@
 # micro-flyweight
-![Build Status](https://travis-ci.org/rayglover/micro-flyweight.svg?branch=master)
+[![Build Status](https://travis-ci.org/rayglover/micro-flyweight.svg?branch=master)](https://travis-ci.org/rayglover/micro-flyweight)
 
 _Flyweights are small-sized handle classes granting constant access to shared common data, thus allowing for the management of large amounts of entities within reasonable memory limits._ 
 
